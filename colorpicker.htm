@@ -1,0 +1,74 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+ 
+  <!-- 라이브러리 -->
+  <script src="js/vanilla-picker.min.js"></script>
+</head>
+<body>
+<h1><a href="https://github.com/Sphinxxxx/vanilla-picker" target="_blank">vanilla-picker</a> demo</h1>
+
+<section>
+    <h2>Basic example</h2>
+    <a href="#" class="button" id="basic">Click me!</a>
+</section>
+
+<section>
+    <h2>More <a href="https://vanilla-picker.js.org/gen/Picker.html#setOptions__anchor" target="_blank">options</a></h2>
+    <a href="#" class="button" id="custom">Click me (and then 'Ok')!</a>
+</section>
+
+<section id="shared">
+    <h2>Shared picker</h2>
+    <p>Select background colors:</p>
+    <div class="pickers">
+        <a href="#" class="button picker_sample" id="color-bg"    data-color="white"></a>
+        <a href="#" class="button picker_sample" id="color-line1" data-color="rgba(30,144,255, 0.2)"></a>
+        <a href="#" class="button picker_sample" id="color-line2" data-color="rgba(255,99,71, 0.3)"></a>
+    </div>
+</section>
+
+
+
+    <div id="fixed"></div>
+
+
+  <script>
+
+
+//function $(selector) { return document.querySelector(selector); }
+
+
+        
+
+
+
+/* Fixed picker */
+
+const parentFixed = $('#fixed'),
+      pickerFixed = new Picker({
+          parent: parentFixed,
+          popup: false,
+          alpha: false,
+          editor: true,
+          color: 'orangered',
+          onChange: function(color) {
+              parentFixed.style.backgroundColor = color.rgbaString;
+          },
+      });
+//Set the color silently (doesn't trigger .onChange()):
+pickerFixed.setColor('lime', true);
+
+
+
+/* Disable normal link navigation */
+
+[parentBasic, parentCustom].forEach(p => {
+    p.addEventListener('click', function(e) {
+        e.preventDefault();
+    });
+})
+  </script>
+
+</body>  
+</html>  
