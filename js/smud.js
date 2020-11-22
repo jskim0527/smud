@@ -78,14 +78,60 @@ fabric.Canvas.prototype.initGrid = function(iWidth, iHeight) {
   }
 
   this.on({
-    'object:moving': function(options) {
-      if (Math.round(options.target.left / iGap * 4) % 4 == 0 &&
-      Math.round(options.target.top / iGap * 4) % 4 == 0) {
-      options.target.set({
-        left: Math.round(options.target.left / iGap) * iGap,
-        top: Math.round(options.target.top / iGap) * iGap
+    'selection:created': function() {
+      console.log(this.getActiveObject().type);
+    },
+    'selection:updated': function() {
+      console.log(this.getActiveObject().type);
+    },
+    'selection:cleared': function() {
+      console.log(this.getActiveObject().type);
+    },
+    'object:moving': function(opt) {
+      if (Math.round(opt.target.left / iGap * 4) % 4 == 0 &&
+      Math.round(opt.target.top / iGap * 4) % 4 == 0) {
+        opt.target.set({
+        left: Math.round(opt.target.left / iGap) * iGap,
+        top: Math.round(opt.target.top / iGap) * iGap
       }).setCoords();
       }  
+    },
+    'mouse:down': function(opt) {
+      var evt = opt.e;
+      if (evt.altKey === true) {
+        this.isDragging = true;
+        this.selection = false;
+        this.lastPosX = evt.clientX;
+        this.lastPosY = evt.clientY;
+      }
+    },
+    'mouse:move': function(opt) {
+      if (this.isDragging) {
+        var e = opt.e;
+        var vpt = this.viewportTransform;
+        vpt[4] += e.clientX - this.lastPosX;
+        vpt[5] += e.clientY - this.lastPosY;
+        this.requestRenderAll();
+        this.lastPosX = e.clientX;
+        this.lastPosY = e.clientY;
+      }
+    },
+    'mouse:up': function(opt) {
+      // on mouse up we want to recalculate new interaction
+      // for all objects, so we call setViewportTransform
+      this.setViewportTransform(this.viewportTransform);
+      this.isDragging = false;
+      this.selection = true;
+    },
+    'mouse:wheel': function(opt) {
+      var delta = opt.e.deltaY;
+      var zoom = this.getZoom();
+      zoom *= 0.999 ** delta;
+      if (zoom > 20) zoom = 20;
+      if (zoom < 0.01) zoom = 0.01;
+      this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
     },
     'touch:longpress': function() {
       alert();

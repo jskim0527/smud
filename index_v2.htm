@@ -1,6 +1,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <head>
+  <link rel="stylesheet" href="js/sweetalert2.min.css" id="theme-styles">
 
   <!-- 라이브러리 -->
   <script src="js/fabric.min.js"></script>
@@ -9,6 +10,9 @@
   <script src="js/FileSaver.min.js"></script>
   <script src="js/canvas-toBlob.js"></script>
   <script src="js/vanilla-picker.min.js"></script>
+  <script src="js/sweetalert2.min.js"></script>
+
+  <!-- 커스텀 -->
   <script src="js/smud.js"></script>
 
   <style>
@@ -93,16 +97,12 @@
       display: block;
     }
 
-    #mind_area {
-
+    .info {
+      text-align: left;
     }
 
 </style>
 </head>
-
-		<!-- 문자열 -->
-		<!-- 컬러가이드 -->
-    <!-- 저장 -->
 
 <body>
   <div class="navbar">
@@ -141,7 +141,7 @@
     <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/image.png" alt="이미지불러오기"/></a>
     <a href="#" id="menu_addText"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/text-color.png" alt="문자열"/></a>
     <a href="#" id="menu_addColorBox"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/color-palette.png" alt="색"/></a>
-    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/help.png" alt="도움말"/></a>     
+    <a href="#" id="menu_help"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/help.png" alt="도움말"/></a>     
   </div>
   <div id="content contenteditable=true">
     <canvas id="c" class="refs"></canvas>
@@ -250,7 +250,21 @@
         // 삭제
         $("#menu_delete").click(function(){
           canvas.Delete();
-        })
+        });
+
+        // 도움말
+        $("#menu_help").click(function(){
+          Swal.fire({
+              title: 'SMUD 도움말',
+              // icon: 'info',
+              html:
+                '<div class="info">' +
+                '<li>ALT + DRAG : 마인드 이동</li>' +
+                '<li>마우스휠 : 마인드 확대/축소</li>' +
+                '</div>',
+            });
+        });
+          
       })();
    
   </script>  
