@@ -4,6 +4,7 @@
 
   <!-- 라이브러리 -->
   <script src="js/fabric.min.js"></script>
+  <script src="js/index.min.js"></script> <!-- undo/redo -->
   <script src="js/jquery-3.5.1.min.js"></script>
   <script src="js/FileSaver.min.js"></script>
   <script src="js/canvas-toBlob.js"></script>
@@ -40,8 +41,8 @@
     .navbar .saperator {
       /* display:inline; */
       list-style: none;
-      padding: 5px 0px 5px 5px;
-      margin-bottom: 5px;      
+      /* padding: 5px 0px 5px 0px; */
+      /* margin-bottom: 5px;       */
       border-bottom: 1px solid #c0c0c0;
     }
 
@@ -104,28 +105,41 @@
 
 <body>
   <div class="navbar">
-    <a href="">SMUD</a>
+    <a href="#">SMUD</a>
     <div class="dropdown">
       <button class="dropbtn">
-        <img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/menu.png"/>
+        <img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/menu.png" alt="파일"/>
         <!-- <img src="https://img.icons8.com/fluent-systems-filled/12/ffffff/sort-down.png"/> -->
       </button>
       <div class="dropdown-content">
-        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/file.png"/></a>
+        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/file.png" alt="신규"/></a>
         <li class="saperator"></li>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/undo--v1.png"/></a>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/redo.png"/></a>
+        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/share-3.png" alt="공유"/></a>
         <li class="saperator"></li>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/share-3.png"/></a>
-        <li class="saperator"></li>
-        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/save.png"/></a>
+        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/save.png" alt="저장"/></a>
         
       </div>
     </div>
-    <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/image.png"/></a>
-    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/text-color.png"/></a>
-    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/color-palette.png"/></a>
-    <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/help.png"/></a>     
+    <div class="dropdown">
+      <button class="dropbtn">
+        <img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/edit.png" alt="편집"/>
+      </button>
+      <div class="dropdown-content">
+        <a href="#" id="menu_undo"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/undo--v1.png" alt="실행 취소"/></a>
+        <a href="#" id="menu_redo"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/redo.png" alt="다시 실행"/></a>
+        <li class="saperator"></li>
+        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/cut.png" alt="잘라내기"/></a>
+        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/copy.png" alt="복사"/></a>
+        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/paste.png" alt="붙여넣기"/></a>
+        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/delete-forever.png" alt="삭제"/></a>        
+        <li class="saperator"></li>
+        
+      </div>
+    </div>    
+    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/image.png" alt="이미지불러오기"/></a>
+    <a href="#" id="menu_addText"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/text-color.png" alt="문자열"/></a>
+    <a href="#" id="menu_addColorBox"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/color-palette.png" alt="색"/></a>
+    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/help.png" alt="도움말"/></a>     
   </div>
   <div id="content contenteditable=true">
     <canvas id="c" class="refs"></canvas>
@@ -139,62 +153,49 @@
 
     (function() {
 
-      var deleteImg = document.createElement('img');
-      deleteImg.src = "images/trash-alt-regular.svg";
-
-      var cloneImg = document.createElement('img');
-      cloneImg.src = "images/copy-regular.svg";
-
-      var fillImg = document.createElement('img');
-      fillImg.src = "images/fill-drip-solid.svg";
-
-      // fabric.Itext.prototype.controls.deleteCtrl = new fabric.Control({
-      //   x: -0.5,
-      //   y: 0.5,
-      //   offsetY: 16,
-      //   offsetX: -16,
-      //   cursorStyle: 'pointer',
-      //   mouseUpHandler: fnDeleteObject,
-      //   render: fnRenderIcon(deleteImg),
-      //   cornerSize: 24
-      // });
-
-      fabric.Object.prototype.controls.deleteCtrl = new fabric.Control({
-        x: -0.5,
-        y: 0.5,
-        offsetY: 16,
-        offsetX: -16,
-        cursorStyle: 'pointer',
-        mouseUpHandler: fnDeleteObject,
-        render: fnRenderIcon(deleteImg),
-        cornerSize: 24
-      });
-
-      fabric.Object.prototype.controls.cloneCtrl = new fabric.Control({
-        x: 0.5,
-        y: 0.5,
-        offsetY: 16,
-        offsetX: 16,
-        cursorStyle: 'pointer',
-        mouseUpHandler: fnCloneObject,
-        render: fnRenderIcon(cloneImg),
-        cornerSize: 24
-      });  
-      
-      fabric.Object.prototype.controls.fillColorCtrl = new fabric.Control({
-        x: 0.5,
-        y: -0.5,
-        offsetY: -16,
-        offsetX: 16,
-        cursorStyle: 'pointer',
-        mouseUpHandler: fnFillColor,
-        render: fnRenderIcon(fillImg),
-        cornerSize: 24
-      });        
-
       fabric.Object.prototype.transparentCorners = false;
       fabric.Object.prototype.cornerColor = 'blue';
       fabric.Object.prototype.cornerStyle = 'circle';
+
+      // fabric.Canvas.prototype.historyInit = function () {
+      //   this.historyUndo = [];
+      //   this.historyNextState = this.historyNext();
+
+      //   this.on({
+      //     "object:added": this.historySaveAction,
+      //     "object:removed": this.historySaveAction,
+      //     "object:modified": this.historySaveAction
+      //   })
+      // }
+
+      // fabric.Canvas.prototype.historyNext = function () {
+      //   return JSON.stringify(this.toDatalessJSON(this.extraProps));
+      // }
+
+      // fabric.Canvas.prototype.historySaveAction = function () {
+      //   if (this.historyProcessing)
+      //     return;
+
+      //   const json = this.historyNextState;
+      //   this.historyUndo.push(json);
+      //   this.historyNextState = this.historyNext();
+
+      //   console.log("history");
+      // }
+
+      // fabric.Canvas.prototype.undo = function () {
+      //   // The undo process will render the new states of the objects
+      //   // Therefore, object:added and object:modified events will triggered again
+      //   // To ignore those events, we are setting a flag.
+      //   this.historyProcessing = true;
+
+      //   const history = this.historyUndo.pop();
+      //   if (history) {
+      //     this.loadFromJSON(history).renderAll();
+      //   }
+
+      //   this.historyProcessing = false;
+      // }      
       
       var $wrapper = $('#content'),
         canvas = new fabric.Canvas('c', {
@@ -204,7 +205,6 @@
           width: MAX_WIDTH,
           height: MAX_HEGIHT
         }),
-
         /*-----------------------------------------------------------*/
         // 클립보드 이미지 붙여 넣기
         /*-----------------------------------------------------------*/
@@ -241,6 +241,7 @@
             height: 100,
             fontSize: 20,
             objectCaching: false,
+            fontFamily: 'Noto Sans KR'
             //hasControls: false,
           });
 
@@ -312,69 +313,10 @@
           // canvas.add(introTxt);                
         };
 
-        /*-----------------------------------------------------------*/
-        // 컨트롤
-        /*-----------------------------------------------------------*/
-        function fnRenderIcon(icon) {
-          return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
-            var size = this.cornerSize;
-            ctx.save();
-            ctx.translate(left, top);
-            ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-            ctx.drawImage(icon, -size/2, -size/2, size, size);
-            ctx.restore();
-          }
-        }
-
-        // 삭제
-        function fnDeleteObject(eventData, target) {
-          var canvas = target.canvas;
-              canvas.remove(target);
-              canvas.requestRenderAll();
-        }
-
-        // 복사
-        function fnCloneObject(eventData, target) {
-          var canvas = target.canvas;
-          target.clone(function(cloned) {
-            cloned.left += 10;
-            cloned.top += 10;
-            canvas.add(cloned);
-          });
-        }
-
-        function fnFillColor(eventData, target) {
-          var canvas = target.canvas;
-
-        // function $(selector) { return document.querySelector(selector); }
-        // const parentFixed = $('#fixed'),
-          pickerFixed = new Picker({
-            parent: document.querySelector('#fixed'),
-            popup: false,
-            alpha: false,
-            editor: true,
-            color: target.fill,
-            // onChange: function(color) {
-            //   STR_RGB = color.hex;
-
-            //   //console.log("fnFillColor=>" + STR_RGB);
-            //   //colorPicker.hide();
-            //   target.fill = STR_RGB;
-            //   canvas.requestRenderAll(); // 다시 그리기
-            // },
-            onDone: function(color) {
-              STR_RGB = color.hex;
-              target.fill = STR_RGB;
-              canvas.requestRenderAll(); // 다시 그리기
-              this.hide();
-            },
-          });
-
-          //colorPicker.show();
-        }
-
         // 배경 그리드
         fnIntroCanvas();
+
+        // canvas.historyInit();
 
         // 붙여넣기 이벤트
         $(window).on('paste', fnPasteImage);
@@ -398,14 +340,16 @@
           }
         });
 
-        
+        /*-----------------------------------------------------------*/
+        // 메뉴 기능
+        /*-----------------------------------------------------------*/        
         // 문자열 추가
-        $("#btn_text").click(function(){
+        $("#menu_addText").click(function(){
           fnAddText();
         });
 
         // 컬러가이드 추가
-        $("#btn_color").click(function(){
+        $("#menu_addColorBox").click(function(){
           fnAddColorGuide();
         });
 
@@ -414,15 +358,22 @@
           $("#c").get(0).toBlob(function(blob) {
             saveAs(blob, "myImg.png");
           });
-        });  
+        });
+
+        $("#menu_undo").click(function(){
+          canvas.undo();
+        });
+
+        $("#menu_redo").click(function(){
+          canvas.redo();
+        });
 
         // $("#btn_paste").click(function(){
         //   alert("준비중");
         //   fnPasteImage();
         // });
         
-      })();  
-
+      })();
    
   </script>  
   
