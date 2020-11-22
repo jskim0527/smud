@@ -109,38 +109,39 @@
     <a href="#">SMUD</a>
     <div class="dropdown">
       <button class="dropbtn">
-        <img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/menu.png" alt="파일"/>
+        <img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/menu.png" alt="파일"/>
         <!-- <img src="https://img.icons8.com/fluent-systems-filled/12/ffffff/sort-down.png"/> -->
       </button>
       <div class="dropdown-content">
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/file.png" alt="신규"/></a>
+        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/file.png" alt="신규"/></a>
         <li class="saperator"></li>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/share-3.png" alt="공유"/></a>
+        <a href="#" id="menu_saveImage"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/download.png"/ alert="이미지로 저장"></a>
+        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/share-3.png" alt="공유"/></a>
         <li class="saperator"></li>
-        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/save.png" alt="저장"/></a>
+        <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/save.png" alt="저장"/></a>
         
       </div>
     </div>
     <div class="dropdown">
       <button class="dropbtn">
-        <img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/edit.png" alt="편집"/>
+        <img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/edit.png" alt="편집"/>
       </button>
       <div class="dropdown-content">
-        <a href="#" id="menu_undo"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/undo--v1.png" alt="실행 취소"/></a>
-        <a href="#" id="menu_redo"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/redo.png" alt="다시 실행"/></a>
+        <a href="#" id="menu_undo"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/undo--v1.png" alt="실행 취소"/></a>
+        <a href="#" id="menu_redo"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/redo.png" alt="다시 실행"/></a>
         <li class="saperator"></li>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/cut.png" alt="잘라내기"/></a>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/copy.png" alt="복사"/></a>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/paste.png" alt="붙여넣기"/></a>
-        <a href=""><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/delete-forever.png" alt="삭제"/></a>        
+        <a href="#" id="menu_cut"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/cut.png" alt="잘라내기"/></a>
+        <a href="#" id="menu_copy"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/copy.png" alt="복사"/></a>
+        <a href="#" id="menu_paste"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/paste.png" alt="붙여넣기"/></a>
+        <a href="#" id="menu_delete"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/delete-forever.png" alt="삭제"/></a>        
         <li class="saperator"></li>
         
       </div>
     </div>    
-    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/image.png" alt="이미지불러오기"/></a>
-    <a href="#" id="menu_addText"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/text-color.png" alt="문자열"/></a>
-    <a href="#" id="menu_addColorBox"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/color-palette.png" alt="색"/></a>
-    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/ffffff/help.png" alt="도움말"/></a>     
+    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/image.png" alt="이미지불러오기"/></a>
+    <a href="#" id="menu_addText"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/text-color.png" alt="문자열"/></a>
+    <a href="#" id="menu_addColorBox"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/color-palette.png" alt="색"/></a>
+    <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/help.png" alt="도움말"/></a>     
   </div>
   <div id="content contenteditable=true">
     <canvas id="c" class="refs"></canvas>
@@ -165,37 +166,19 @@
           stopContextMenu: true,
           width: MAX_WIDTH,
           height: MAX_HEGIHT
-        }),
-        /*-----------------------------------------------------------*/
-        // 클립보드 이미지 붙여 넣기
-        /*-----------------------------------------------------------*/
-        fnPasteImage = function(e) {
-          // alert();
-          var items = e.originalEvent.clipboardData.items;
-          
-          e.preventDefault();
-          e.stopPropagation();
-          
-          //Loop through files
-          for (var i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf('image') == -1) continue;
-            var file = items[i],
-              type = items[i].type;
-            var imageData = file.getAsFile();
-            var URLobj = window.URL || window.webkitURL;
-            var img = new Image();
-            img.src = URLobj.createObjectURL(imageData);
-            fabric.Image.fromURL(img.src, function(img) {
-              canvas.add(img);
-            });
-          }
-        };
+        });
 
         // 배경 그리드
         canvas.initGrid(MAX_WIDTH, MAX_HEGIHT);
 
-        // 붙여넣기 이벤트
-        $(window).on('paste', fnPasteImage);
+        /*-----------------------------------------------------------*/
+        // 이벤트 처리
+        /*-----------------------------------------------------------*/  
+        //$(window).on('paste', fnPasteImage);
+
+        $(window).on('paste', function(e) {
+          canvas.PasteImage(canvas, e);
+        });
 
         $(window).keydown(function(e) {	  
           console.log(e.which);
@@ -210,13 +193,17 @@
           } else if (e.which === 86 && e.ctrlKey) {
             // control + v
             // Paste();
-            console.log("Paste");
+           // canvas.PasteImage(e);
+            //console.log("Paste");
           }
         });
 
         /*-----------------------------------------------------------*/
         // 메뉴 기능
-        /*-----------------------------------------------------------*/        
+        /*-----------------------------------------------------------*/     
+        // 붙여 넣기
+
+        
         // 문자열 추가
         $("#menu_addText").click(function(){
           //fnAddText();
@@ -229,25 +216,41 @@
         });
 
         // 이미지로 저장하기
-        $("#btn_save").click(function(){
+        $("#menu_saveImage").click(function(){
           $("#c").get(0).toBlob(function(blob) {
-            saveAs(blob, "myImg.png");
+            saveAs(blob, "mind.png");
           });
         });
 
+        // 실행 취소
         $("#menu_undo").click(function(){
           canvas.undo();
         });
 
+        // 다시 실행
         $("#menu_redo").click(function(){
           canvas.redo();
         });
 
-        // $("#btn_paste").click(function(){
-        //   alert("준비중");
-        //   fnPasteImage();
-        // });
+        // 잘라내기
+        $("#menu_cut").click(function(){
+          canvas.Cut();
+        });
+
+        // 복사
+        $("#menu_copy").click(function(){
+          canvas.Copy();
+        });
         
+        // 붙여넣기
+        $("#menu_paste").click(function(){
+          canvas.Paste(canvas);
+        });
+
+        // 삭제
+        $("#menu_delete").click(function(){
+          canvas.Delete();
+        })
       })();
    
   </script>  

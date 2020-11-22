@@ -94,6 +94,90 @@ fabric.Canvas.prototype.initGrid = function(iWidth, iHeight) {
 }       
 
 /**
+ * 이미지 붙여 넣기
+ * @param {*} o 
+ * @param {*} e 
+ */
+fabric.Canvas.prototype.PasteImage = function(o, e) {
+  var items = e.originalEvent.clipboardData.items;
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  //Loop through files
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf('image') == -1) continue;
+    var file = items[i],
+      type = items[i].type;
+    var imageData = file.getAsFile();
+    var URLobj = window.URL || window.webkitURL;
+    var img = new Image();
+    img.src = URLobj.createObjectURL(imageData);
+
+    console.log(img.src);
+    fabric.Image.fromURL(img.src, function(img) {
+      o.add(img);
+      console.log("이미지 붙여넣기");
+    });
+  }
+}
+
+/**
+ * 잘라내기
+ */
+fabric.Canvas.prototype.Cut = function() {
+  this.Copy();
+  this.Delete();
+}
+
+/**
+ * 복사
+ */
+fabric.Canvas.prototype.Copy = function() {
+	this.getActiveObject().clone(function(cloned) {
+		_clipboard = cloned;
+  });
+}
+
+/**
+ * 붙여넣기
+ * TODO 파라메터 => this
+ * @param {*} o 
+ */
+fabric.Canvas.prototype.Paste = function(o) {
+	_clipboard.clone(function(clonedObj) {
+		o.discardActiveObject();
+		clonedObj.set({
+			left: clonedObj.left + 10,
+			top: clonedObj.top + 10,
+			evented: true,
+		});
+		if (clonedObj.type === 'activeSelection') {
+			// active selection needs a reference to the canvas.
+			clonedObj.canvas = o;
+			clonedObj.forEachObject(function(obj) {
+				o.add(obj);
+			});
+			// this should solve the unselectability
+			clonedObj.setCoords();
+		} else {
+			o.add(clonedObj);
+		}
+		_clipboard.top += 10;
+		_clipboard.left += 10;
+		o.setActiveObject(clonedObj);
+		o.requestRenderAll();
+	});
+}
+
+/**
+ * 삭제
+ */
+fabric.Canvas.prototype.Delete = function() {
+  this.remove(this.getActiveObject());
+}
+
+/**
  * Canvas에 TextBox 추가
  * @param {*} e 
  */
