@@ -72,13 +72,13 @@ fabric.Canvas.prototype.initCanvas = function() {
 
   this.on({
     'selection:created': function() {
-      console.log("created");
+      // console.log("created");
     },
     'selection:updated': function() {
-      console.log("updated");
+      // console.log("updated");
     },
     'selection:cleared': function() {
-      console.log("cleared");
+      // console.log("cleared");
     },
     'object:moving': function(opt) {
       if (Math.round(opt.target.left / iGap * 4) % 4 == 0 &&
@@ -89,6 +89,22 @@ fabric.Canvas.prototype.initCanvas = function() {
       }).setCoords();
       }  
     },
+    // 'dragover' : function() {
+    //   console.log("drag");
+    // },
+    // 'drop' : function(e) {
+    //   console.log("drop");
+    //   //prevent browser from open the file when drop off
+    //   e.stopPropagation();
+    //   e.preventDefault();
+    //   dropzone.removeClass('hover');
+      
+    //   //retrieve uploaded files data
+    //   var files = e.originalEvent.dataTransfer.files;
+    //   processFiles(files);
+
+    //   return false;      
+    // },
     'mouse:down': function(opt) {
       var evt = opt.e;
       if (evt.altKey === true) {
@@ -153,11 +169,11 @@ fabric.Canvas.prototype.PasteImage = function(o, e) {
     var URLobj = window.URL || window.webkitURL;
     var img = new Image();
     img.src = URLobj.createObjectURL(imageData);
-
-    console.log(img.src);
+    // console.log(imageData);
+    // console.log(img.src);
     fabric.Image.fromURL(img.src, function(img) {
       o.add(img);
-      console.log("이미지 붙여넣기");
+      //console.log("이미지 붙여넣기");
     });
   }
 }

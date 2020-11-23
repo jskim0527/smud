@@ -13,7 +13,6 @@
   <script src="js/canvas-toBlob.js"></script>
   <script src="js/vanilla-picker.min.js"></script>
   <script src="js/sweetalert2.min.js"></script>
-
   <!-- 커스텀 -->
   <script src="js/smud.js"></script>
 
@@ -196,21 +195,43 @@
           }
         });
 
-        $(window).on('paste', function(e) {
-          canvas.PasteImage(canvas, e);
+        $(window).on({
+          'paste': function(e) {
+            canvas.PasteImage(canvas, e);
+          },
+          'drop': function(e) {
+            e.preventDefault();
+
+            var files = e.originalEvent.dataTransfer.files;          
+            
+            for(var i = 0; i < files.length; i++) {
+              if (files[i].type.indexOf('image') == -1) continue;
+              var file = files[i],
+                type = files[i].type;
+              //var imageData = file.getAsFile();
+              var URLobj = window.URL || window.webkitURL;
+              var img = new Image();
+              img.src = URLobj.createObjectURL(file);
+              fabric.Image.fromURL(img.src, function(img) {
+                canvas.add(img);
+              });
+
+            }
+            
+          }
         });
 
         $(window).keydown(function(e) {	  
-          console.log(e.which);
-          if (e.which === 89 && e.ctrlKey) {
+          //console.log(e.which);
+          if (e.which === 89 && e.ctrlKey) { // ctrl + y
             canvas.redo();
-          } else if (e.which === 90 && e.ctrlKey) {
+          } else if (e.which === 90 && e.ctrlKey) { // ctrl + z
             canvas.undo();
-          } else if (e.which === 67 && e.ctrlKey) {
+          } else if (e.which === 67 && e.ctrlKey) { // ctrl + c
             // control + c
             // Copy();
-            console.log("Copy");
-          } else if (e.which === 86 && e.ctrlKey) {
+            // console.log("Copy");
+          } else if (e.which === 86 && e.ctrlKey) { // ctrl + v
             // control + v
             // Paste();
            // canvas.PasteImage(e);
