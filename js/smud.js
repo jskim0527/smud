@@ -288,11 +288,11 @@ fabric.Canvas.prototype.AddTextBox = function(e) {
 }
 
 /**
- * Canvas에 ColorBox 추가
+ * Canvas에 Rect 추가
  * @param {*} e 
  */
-fabric.Canvas.prototype.AddColorBox = function(e) {
-  console.log($('.panel .color').css('background-color'));
+fabric.Canvas.prototype.AddRect = function(e) {
+  // console.log($('.panel .color').css('background-color'));
   var rect = new fabric.Rect({
     left: 100,
     top: 50,
@@ -306,4 +306,22 @@ fabric.Canvas.prototype.AddColorBox = function(e) {
 
   this.add(rect);
   this.setActiveObject(rect);
+}
+
+fabric.Canvas.prototype.AddCircle = function(e) {
+  // console.log($('.panel .color').css('background-color'));
+  var circle = new fabric.Circle({
+    radius: 65,
+    left: 100,
+    top: 50,
+    fill: $('.panel .color').css('background-color'),
+    width: 200,
+    height: 100,
+    objectCaching: false,
+    //stroke: 'lightgreen',
+    //strokeWidth: 4,
+  });
+
+  this.add(circle);
+  this.setActiveObject(circle);
 }

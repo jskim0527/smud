@@ -222,7 +222,7 @@
         });
 
         $(window).keydown(function(e) {	  
-          //console.log(e.which);
+          console.log(e.which);
           if (e.which === 89 && e.ctrlKey) { // ctrl + y
             canvas.redo();
           } else if (e.which === 90 && e.ctrlKey) { // ctrl + z
@@ -238,8 +238,10 @@
             //console.log("Paste");
           } else if (e.which === 84 && e.altKey) { // alt + t
             canvas.AddTextBox();
-          } else if (e.which === 77 && e.altKey) { // alt + t
-            canvas.AddColorBox();
+          } else if (e.which === 77 && e.altKey) { // alt + m
+            canvas.AddRect();
+          } else if (e.which === 76 && e.altKey) { // alt + l
+            canvas.AddCircle();
           } else if (e.which === 83 && e.altKey) { // alt + s
             $("#c").get(0).toBlob(function(blob) {
               saveAs(blob, "mind.png");
@@ -260,8 +262,8 @@
         });
 
         // 컬러가이드 추가
-        $("#menu_addColorBox").click(function(){
-          canvas.AddColorBox();
+        $("#menu_addRect").click(function(){
+          canvas.AddRect();
         });
 
         // 이미지로 저장하기
@@ -316,7 +318,8 @@
                 '<li>ALT + M : 사각형 추가</li>' +
                 '<li>ALT + S : 이미지로 저장</li>' +
                 '<li>ALT + DRAG : 마인드 이동</li>' +
-                '<li>마우스휠 : 마인드 확대/축소</li>' +
+                '<li>드래그 앤 드랍 : 이미지 추가</li>' +                
+                '<li>마우스 휠 : 마인드 확대/축소</li>' +
                 '<li>SHIFT + 선택 : 그룹</li>' +
                 '</div>',
             });
