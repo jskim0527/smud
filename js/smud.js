@@ -63,29 +63,22 @@ fabric.Canvas.prototype._smudMonitoring = function() {
   //console.log("monitoring");
 }
 
-fabric.Canvas.prototype.initGrid = function(iWidth, iHeight) {
+fabric.Canvas.prototype.initCanvas = function() {
   var iGap = 50;
 
-  for (var i = 0; i < (iHeight / iGap); i++) {
-    this.add(new fabric.Line([i * iGap, 0, i * iGap, iHeight], {
-      stroke: '#d6d6d6',
-      selectable: false
-    }));
-    this.add(new fabric.Line([0, i * iGap, iWidth, i * iGap], {
-      stroke: '#d6d6d6',
-      selectable: false
-    }))
-  }
+  // this.setBackgroundColor(
+  //   'rgba(255, 73, 64, 0.6)'
+  // , this.renderAll.bind(this));
 
   this.on({
     'selection:created': function() {
-      console.log(this.getActiveObject().type);
+      console.log("created");
     },
     'selection:updated': function() {
-      console.log(this.getActiveObject().type);
+      console.log("updated");
     },
     'selection:cleared': function() {
-      console.log(this.getActiveObject().type);
+      console.log("cleared");
     },
     'object:moving': function(opt) {
       if (Math.round(opt.target.left / iGap * 4) % 4 == 0 &&
@@ -99,6 +92,7 @@ fabric.Canvas.prototype.initGrid = function(iWidth, iHeight) {
     'mouse:down': function(opt) {
       var evt = opt.e;
       if (evt.altKey === true) {
+      //if (evt.which === 32) { // 스페이스바
         this.isDragging = true;
         this.selection = false;
         this.lastPosX = evt.clientX;
@@ -224,6 +218,39 @@ fabric.Canvas.prototype.Delete = function() {
 }
 
 /**
+ * 색선택
+ * 
+ * @param {*} o 
+ */
+fabric.Canvas.prototype.FillColor = function(o) {
+  //var curColor = $('.panel .color').css('background-color');
+  var pickerFixed = new Picker({
+    parent: document.querySelector('.panel .color'),
+    popup: 'left',
+    //alpha: false,
+    //editor: true,
+    //color: curColor, //target.fill,
+    onChange: function(color) {
+      //$('.panel .color').css('background-color', color.rgbString);
+      console.log(color.hex);
+      //console.log("fnFillColor=>" + STR_RGB);
+      //colorPicker.hide();
+      //target.fill = STR_RGB;
+      //canvas.requestRenderAll(); // 다시 그리기
+    },
+    onDone: function(color) {
+      // target.fill = STR_RGB;
+      //console.log(o.getActiveObject());
+      //o.getActiveObject().fill = color.rgbString;
+      //o.requestRenderAll(); // 다시 그리기
+      //this.hide();
+    },
+  });
+
+  //colorPicker.show();
+}
+
+/**
  * Canvas에 TextBox 추가
  * @param {*} e 
  */
@@ -231,6 +258,7 @@ fabric.Canvas.prototype.AddTextBox = function(e) {
   var rect = new fabric.Textbox('This is TextBox', {
     left: 100,
     top: 50,
+    fill: $('.panel .color').css('background-color'),
     width: 200,
     height: 100,
     fontSize: 20,
@@ -248,10 +276,11 @@ fabric.Canvas.prototype.AddTextBox = function(e) {
  * @param {*} e 
  */
 fabric.Canvas.prototype.AddColorBox = function(e) {
+  console.log($('.panel .color').css('background-color'));
   var rect = new fabric.Rect({
     left: 100,
     top: 50,
-    fill: STR_RGB,
+    fill: $('.panel .color').css('background-color'),
     width: 200,
     height: 100,
     objectCaching: false,

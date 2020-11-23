@@ -1,5 +1,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
 <head>
   <link rel="stylesheet" href="js/sweetalert2.min.css" id="theme-styles">
 
@@ -25,12 +27,14 @@
 
     /* 메뉴 */
     .navbar {
+      /* float: top; */
       overflow: hidden;
       /* height: 38px; */
       color: #CCCCCC;
       background-color: #333333;
       border-bottom: #1E1E1E;
       align-items: center;
+      z-index: 999;
     }
     
     .navbar a {
@@ -49,6 +53,12 @@
       /* padding: 5px 0px 5px 0px; */
       /* margin-bottom: 5px;       */
       border-bottom: 1px solid #c0c0c0;
+    }
+
+    .logo {
+      float: left;
+      fill: #CCCCCC;
+      height: 48px;
     }
 
     .dropdown {
@@ -97,16 +107,65 @@
       display: block;
     }
 
+    /* 정보 */
     .info {
       text-align: left;
     }
 
+    /* 마인드 영역 */
+    #content {
+      overflow: hidden;
+      height: calc(100% - 52px);
+      /* display: block; width: 100%; height: 100%; */
+      /* background-color: #1E1E1E; */
+    }
+    
+    /* 도움말 버튼 */
+    .fab-container {
+      position: fixed;
+      bottom: 20px;
+      left: 0px;
+      z-index: 999;
+      cursor: pointer;
+    }
+
+    .fab-icon-holder {
+        width: 50px;
+        height: 50px;
+        border-radius: 0% 10% 10% 0%;;
+        background: #d23f31;
+
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .fab-icon-holder:hover {
+        opacity: 0.8;
+    }
+
+    .panel {
+      position: fixed;
+      top: 1px;
+      right : 4px;
+      z-index: 999;
+    }
+    .panel .color {
+      /* position: fixed;
+      top: 20px;
+      right : 200px; */
+      width: 40px;
+      height: 40px;      
+      cursor: pointer;      
+      float: left;      
+      margin: 3px;
+      border: black 2px solid;
+      background:#d23f31;
+    }
 </style>
 </head>
 
 <body>
   <div class="navbar">
-    <a href="#">SMUD</a>
+    <img class="logo" src="images/smud_logo.svg">
     <div class="dropdown">
       <button class="dropbtn">
         <img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/menu.png" alt="파일"/>
@@ -141,16 +200,25 @@
     <a href="#"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/image.png" alt="이미지불러오기"/></a>
     <a href="#" id="menu_addText"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/text-color.png" alt="문자열"/></a>
     <a href="#" id="menu_addColorBox"><img src="https://img.icons8.com/fluent-systems-filled/24/c0c0c0/color-palette.png" alt="색"/></a>
-    <a href="#" id="menu_help"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/help.png" alt="도움말"/></a>     
+    <!-- <a href="#" id="menu_help"><img src="https://img.icons8.com/fluent-systems-filled/24/000000/help.png" alt="도움말"/></a>      -->
+
+    <div class="panel">
+      <div class="color"></div>
+    </div>
   </div>
-  <div id="content contenteditable=true">
-    <canvas id="c" class="refs"></canvas>
+  <!-- <div id="content contenteditable=true"> -->
+  <div id="content">
+    <canvas id="c"></canvas>
   </div>
 
+  <div class="fab-container">
+    <div>
+      <a href="#" id="menu_help"><img src="https://img.icons8.com/fluent-systems-filled/48/ffffff/help.png" alt="도움말"/></a>
+    </div>
+</div>
 
   <script>  
-    var MAX_WIDTH = 800;
-    var MAX_HEGIHT = 1000;
+
     var STR_RGB = "#6ae2ff";
 
     (function() {
@@ -164,24 +232,33 @@
           selection: false,
           fireRightClick: true,
           stopContextMenu: true,
-          width: MAX_WIDTH,
-          height: MAX_HEGIHT
+          width: $("#content").width(), //window.innerWidth,
+          height: $("#content").height(), //window.innerHeight
         });
-
+       
         // 배경 그리드
-        canvas.initGrid(MAX_WIDTH, MAX_HEGIHT);
+        canvas.initCanvas();       
 
         /*-----------------------------------------------------------*/
         // 이벤트 처리
         /*-----------------------------------------------------------*/  
-        //$(window).on('paste', fnPasteImage);
+        $(window).resize(function () {
+          if (canvas.width != $("#content").width()) {
+              canvas.setWidth($("#content").width());
+              canvas.setHeight($("#content").height());
+              canvas.renderAll();
+              canvas.calcOffset();
+
+              console.log($("#content").width());
+          }
+        });
 
         $(window).on('paste', function(e) {
           canvas.PasteImage(canvas, e);
         });
 
         $(window).keydown(function(e) {	  
-          console.log(e.which);
+          //console.log(e.which);
           if (e.which === 89 && e.ctrlKey) {
             canvas.redo();
           } else if (e.which === 90 && e.ctrlKey) {
@@ -252,15 +329,20 @@
           canvas.Delete();
         });
 
+        $(".panel .color").click(function(){
+          canvas.FillColor(canvas);
+        })
+
         // 도움말
         $("#menu_help").click(function(){
           Swal.fire({
-              title: 'SMUD 도움말',
+              title: 'SMUD V0.2 도움말',
               // icon: 'info',
               html:
                 '<div class="info">' +
                 '<li>ALT + DRAG : 마인드 이동</li>' +
                 '<li>마우스휠 : 마인드 확대/축소</li>' +
+                '<li>SHIFT + 선택 : 그룹</li>' +
                 '</div>',
             });
         });
