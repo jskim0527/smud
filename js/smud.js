@@ -151,15 +151,15 @@ fabric.Canvas.prototype.initCanvas = function() {
 
 /**
  * 이미지 붙여 넣기
- * @param {*} o 
  * @param {*} e 
  */
-fabric.Canvas.prototype.PasteImage = function(o, e) {
+fabric.Canvas.prototype.PasteImage = function(e) {
   var items = e.originalEvent.clipboardData.items;
-  
+  var o = this;
+
   e.preventDefault();
   e.stopPropagation();
-  
+
   //Loop through files
   for (var i = 0; i < items.length; i++) {
     if (items[i].type.indexOf('image') == -1) continue;
@@ -169,9 +169,8 @@ fabric.Canvas.prototype.PasteImage = function(o, e) {
     var URLobj = window.URL || window.webkitURL;
     var img = new Image();
     img.src = URLobj.createObjectURL(imageData);
-    // console.log(imageData);
-    // console.log(img.src);
     fabric.Image.fromURL(img.src, function(img) {
+      // this === window
       o.add(img);
       //console.log("이미지 붙여넣기");
     });
@@ -197,10 +196,9 @@ fabric.Canvas.prototype.Copy = function() {
 
 /**
  * 붙여넣기
- * TODO 파라메터 => this
- * @param {*} o 
  */
-fabric.Canvas.prototype.Paste = function(o) {
+fabric.Canvas.prototype.Paste = function() {
+  var o = this;
 	_clipboard.clone(function(clonedObj) {
 		o.discardActiveObject();
 		clonedObj.set({
@@ -235,10 +233,9 @@ fabric.Canvas.prototype.Delete = function() {
 
 /**
  * 색선택
- * 
- * @param {*} o 
  */
-fabric.Canvas.prototype.FillColor = function(o) {
+fabric.Canvas.prototype.FillColor = function() {
+  var o = this;
   //var curColor = $('.panel .color').css('background-color');
   var pickerFixed = new Picker({
     parent: document.querySelector('.panel .color'),

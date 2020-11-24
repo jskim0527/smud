@@ -197,7 +197,7 @@
 
         $(window).on({
           'paste': function(e) {
-            canvas.PasteImage(canvas, e);
+            canvas.PasteImage(e);
           },
           'drop': function(e) {
             e.preventDefault();
@@ -295,7 +295,7 @@
         
         // 붙여넣기
         $("#menu_paste").click(function(){
-          canvas.Paste(canvas);
+          canvas.Paste();
         });
 
         // 삭제
@@ -304,7 +304,7 @@
         });
 
         $(".panel .color").click(function(){
-          canvas.FillColor(canvas);
+          canvas.FillColor();
         })
 
         // 도움말
