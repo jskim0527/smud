@@ -1,7 +1,6 @@
 /**
  * 작업용 스크립트
  */
-
 /**
  * Override the initialize function for the _historyInit();
  */
@@ -66,9 +65,9 @@ fabric.Canvas.prototype._smudMonitoring = function() {
 fabric.Canvas.prototype.initCanvas = function() {
   var iGap = 50;
 
-  //  this.setBackgroundColor(
-  //    'rgba(255, 255, 255, 0.6)'
-  //  , this.renderAll.bind(this));
+   this.setBackgroundColor(
+     'rgba(255, 255, 255, 0.6)'
+   , this.renderAll.bind(this));
 
   this.on({
     'selection:created': function() {
@@ -92,7 +91,7 @@ fabric.Canvas.prototype.initCanvas = function() {
     'mouse:down': function(opt) {
       var evt = opt.e;
       if (this.isSpaceBarKeyDn) {
-      //if (evt.which === 32) { // 스페이스바
+        //if (evt.which === 32) { // 스페이스바
         this.isDragging = true;
         this.selection = false;
         this.lastPosX = evt.clientX;
@@ -225,38 +224,6 @@ fabric.Canvas.prototype.Delete = function() {
 }
 
 /**
- * 색선택
- */
-fabric.Canvas.prototype.FillColor = function() {
-  var o = this;
-  //var curColor = $('.panel .color').css('background-color');
-  var pickerFixed = new Picker({
-    parent: document.querySelector('.panel .color'),
-    popup: 'left',
-    //alpha: false,
-    //editor: true,
-    //color: curColor, //target.fill,
-    onChange: function(color) {
-      //$('.panel .color').css('background-color', color.rgbString);
-      console.log(color.hex);
-      //console.log("fnFillColor=>" + STR_RGB);
-      //colorPicker.hide();
-      //target.fill = STR_RGB;
-      //canvas.requestRenderAll(); // 다시 그리기
-    },
-    onDone: function(color) {
-      // target.fill = STR_RGB;
-      //console.log(o.getActiveObject());
-      //o.getActiveObject().fill = color.rgbString;
-      //o.requestRenderAll(); // 다시 그리기
-      //this.hide();
-    },
-  });
-
-  //colorPicker.show();
-}
-
-/**
  * Canvas에 TextBox 추가
  * @param {*} e 
  */
@@ -269,6 +236,7 @@ fabric.Canvas.prototype.AddTextBox = function(e) {
     height: 100,
     fontSize: 20,
     objectCaching: false,
+    cornerColor: '#D3D7DA',
     fontFamily: 'Noto Sans KR'
     //hasControls: false,
   });
@@ -290,6 +258,7 @@ fabric.Canvas.prototype.AddRect = function(e) {
     width: 200,
     height: 100,
     objectCaching: false,
+    cornerColor: '#D3D7DA',
     //stroke: 'lightgreen',
     //strokeWidth: 4,
   });
@@ -305,13 +274,14 @@ fabric.Canvas.prototype.AddRect = function(e) {
 fabric.Canvas.prototype.AddCircle = function(e) {
   // console.log($('.panel .color').css('background-color'));
   var circle = new fabric.Circle({
-    radius: 65,
+    radius: 50,
     left: 100,
     top: 50,
     fill: $('.panel .color').css('background-color'),
-    width: 200,
+    width: 100,
     height: 100,
     objectCaching: false,
+    cornerColor: '#D3D7DA',
     //stroke: 'lightgreen',
     //strokeWidth: 4,
   });
