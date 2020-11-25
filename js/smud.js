@@ -66,9 +66,9 @@ fabric.Canvas.prototype._smudMonitoring = function() {
 fabric.Canvas.prototype.initCanvas = function() {
   var iGap = 50;
 
-  // this.setBackgroundColor(
-  //   'rgba(255, 73, 64, 0.6)'
-  // , this.renderAll.bind(this));
+  //  this.setBackgroundColor(
+  //    'rgba(255, 255, 255, 0.6)'
+  //  , this.renderAll.bind(this));
 
   this.on({
     'selection:created': function() {
@@ -89,25 +89,9 @@ fabric.Canvas.prototype.initCanvas = function() {
       }).setCoords();
       }  
     },
-    // 'dragover' : function() {
-    //   console.log("drag");
-    // },
-    // 'drop' : function(e) {
-    //   console.log("drop");
-    //   //prevent browser from open the file when drop off
-    //   e.stopPropagation();
-    //   e.preventDefault();
-    //   dropzone.removeClass('hover');
-      
-    //   //retrieve uploaded files data
-    //   var files = e.originalEvent.dataTransfer.files;
-    //   processFiles(files);
-
-    //   return false;      
-    // },
     'mouse:down': function(opt) {
       var evt = opt.e;
-      if (evt.altKey === true) {
+      if (this.isSpaceBarKeyDn) {
       //if (evt.which === 32) { // 스페이스바
         this.isDragging = true;
         this.selection = false;
@@ -116,7 +100,7 @@ fabric.Canvas.prototype.initCanvas = function() {
       }
     },
     'mouse:move': function(opt) {
-      if (this.isDragging) {
+      if (this.isDragging && this.isSpaceBarKeyDn) {
         var e = opt.e;
         var vpt = this.viewportTransform;
         vpt[4] += e.clientX - this.lastPosX;
@@ -147,7 +131,16 @@ fabric.Canvas.prototype.initCanvas = function() {
       alert();
     }
   });
-}       
+}
+
+fabric.Canvas.prototype.SpaceBarKeyDn = function(e) {
+  this.isSpaceBarKeyDn = true;
+  this.setCursor('pointer');
+}
+
+fabric.Canvas.prototype.SpaceBarKeyUp = function(e) {
+  this.isSpaceBarKeyDn = false;
+}
 
 /**
  * 이미지 붙여 넣기
@@ -305,6 +298,10 @@ fabric.Canvas.prototype.AddRect = function(e) {
   this.setActiveObject(rect);
 }
 
+/**
+ * Canvas에 Circle 추가
+ * @param {*} e 
+ */
 fabric.Canvas.prototype.AddCircle = function(e) {
   // console.log($('.panel .color').css('background-color'));
   var circle = new fabric.Circle({

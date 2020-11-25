@@ -34,6 +34,7 @@
     
     .logo {
       float: left;
+      margin-left: 10px;
       height: 48px;
     }
 
@@ -215,37 +216,45 @@
               fabric.Image.fromURL(img.src, function(img) {
                 canvas.add(img);
               });
-
             }
-            
-          }
-        });
-
-        $(window).keydown(function(e) {	  
-          console.log(e.which);
-          if (e.which === 89 && e.ctrlKey) { // ctrl + y
-            canvas.redo();
-          } else if (e.which === 90 && e.ctrlKey) { // ctrl + z
-            canvas.undo();
-          } else if (e.which === 67 && e.ctrlKey) { // ctrl + c
-            // control + c
-            // Copy();
-            // console.log("Copy");
-          } else if (e.which === 86 && e.ctrlKey) { // ctrl + v
-            // control + v
-            // Paste();
-           // canvas.PasteImage(e);
-            //console.log("Paste");
-          } else if (e.which === 84 && e.altKey) { // alt + t
-            canvas.AddTextBox();
-          } else if (e.which === 77 && e.altKey) { // alt + m
-            canvas.AddRect();
-          } else if (e.which === 76 && e.altKey) { // alt + l
-            canvas.AddCircle();
-          } else if (e.which === 83 && e.altKey) { // alt + s
-            $("#c").get(0).toBlob(function(blob) {
-              saveAs(blob, "mind.png");
-            });            
+          },
+          'keydown': function(e) {
+            // console.log(e.which);
+            if (e.which === 89 && e.ctrlKey) { // ctrl + y
+              canvas.redo();
+            } else if ((e.ctrlKey || e.metaKey) && e.which === 90) { // ctrl + z
+              e.preventDefault();
+              canvas.undo();
+            } else if ((e.ctrlKey || e.metaKey) && e.which === 88) { // ctrl + x
+              e.preventDefault();
+              canvas.Cut();              
+            } else if ((e.ctrlKey || e.metaKey) && e.which === 67) { // ctrl + c
+              e.preventDefault();
+              canvas.Copy();
+            } else if ((e.ctrlKey || e.metaKey) && e.which === 86) { // ctrl + v
+              e.preventDefault();              
+              canvas.Paste();
+            } else if (e.which === 84 && (! canvas.getActiveObject() || canvas.getActiveObject().type !== 'textbox' || ! canvas.getActiveObject().isEditing)) { // t 텍스트박스
+              canvas.AddTextBox();
+            } else if (e.which === 77 && (! canvas.getActiveObject() || canvas.getActiveObject().type !== 'textbox' || ! canvas.getActiveObject().isEditing)) { // m 사각형
+              canvas.AddRect();
+            } else if (e.which === 76 && (! canvas.getActiveObject() || canvas.getActiveObject().type !== 'textbox' || ! canvas.getActiveObject().isEditing)) { // l 동그라미
+              canvas.AddCircle();
+            } else if (e.which === 32) { // space bar
+              canvas.SpaceBarKeyDn();
+            } else if (e.which === 46) { // delete
+              canvas.Delete();              
+            } else if ((e.ctrlKey || e.metaKey) && e.which === 83) { // ctrl + s
+              e.preventDefault();
+              $("#c").get(0).toBlob(function(blob) {
+                saveAs(blob, "mind.png");
+              });            
+            }
+          },
+          'keyup': function(e) {
+            if  (e.which === 32) { // space bar
+              canvas.SpaceBarKeyUp();
+            }
           }
         });
 
@@ -255,73 +264,79 @@
         // 붙여 넣기
 
         
-        // 문자열 추가
-        $("#menu_addText").click(function(){
-          //fnAddText();
-          canvas.AddTextBox();
-        });
+        // // 문자열 추가
+        // $("#menu_addText").click(function(){
+        //   //fnAddText();
+        //   canvas.AddTextBox();
+        // });
 
-        // 컬러가이드 추가
-        $("#menu_addRect").click(function(){
-          canvas.AddRect();
-        });
+        // // 컬러가이드 추가
+        // $("#menu_addRect").click(function(){
+        //   canvas.AddRect();
+        // });
 
-        // 이미지로 저장하기
-        $("#menu_saveImage").click(function(){
-          $("#c").get(0).toBlob(function(blob) {
-            saveAs(blob, "mind.png");
-          });
-        });
+        // // 이미지로 저장하기
+        // $("#menu_saveImage").click(function(){
+        //   $("#c").get(0).toBlob(function(blob) {
+        //     saveAs(blob, "mind.png");
+        //   });
+        // });
 
-        // 실행 취소
-        $("#menu_undo").click(function(){
-          canvas.undo();
-        });
+        // // 실행 취소
+        // $("#menu_undo").click(function(){
+        //   canvas.undo();
+        // });
 
-        // 다시 실행
-        $("#menu_redo").click(function(){
-          canvas.redo();
-        });
+        // // 다시 실행
+        // $("#menu_redo").click(function(){
+        //   canvas.redo();
+        // });
 
-        // 잘라내기
-        $("#menu_cut").click(function(){
-          canvas.Cut();
-        });
+        // // 잘라내기
+        // $("#menu_cut").click(function(){
+        //   canvas.Cut();
+        // });
 
-        // 복사
-        $("#menu_copy").click(function(){
-          canvas.Copy();
-        });
+        // // 복사
+        // $("#menu_copy").click(function(){
+        //   canvas.Copy();
+        // });
         
-        // 붙여넣기
-        $("#menu_paste").click(function(){
-          canvas.Paste();
-        });
+        // // 붙여넣기
+        // $("#menu_paste").click(function(){
+        //   canvas.Paste();
+        // });
 
-        // 삭제
-        $("#menu_delete").click(function(){
-          canvas.Delete();
-        });
+        // // 삭제
+        // $("#menu_delete").click(function(){
+        //   canvas.Delete();
+        // });
 
-        $(".panel .color").click(function(){
-          canvas.FillColor();
-        })
+        // $(".panel .color").click(function(){
+        //   canvas.FillColor();
+        // })
 
         // 도움말
         $("#menu_help").click(function(){
           Swal.fire({
-              title: 'SMUD V0.2 도움말',
+              title: 'SMUD V0.3 도움말',
               // icon: 'info',
               html:
                 '<div class="info">' +
-                '<li>ALT + T : 텍스트박스 추가</li>' +
-                '<li>ALT + M : 사각형 추가</li>' +
-                '<li>ALT + L : 타원 추가</li>' +
-                '<li>ALT + S : 이미지로 저장</li>' +
-                '<li>ALT + DRAG : 마인드 이동</li>' +
-                '<li>DRAG & DROP : 이미지 추가</li>' +                
-                '<li>마우스 휠 : 마인드 확대/축소</li>' +
+                '<li>T : 텍스트박스 추가</li>' +
+                '<li>M : 사각형 추가</li>' +
+                '<li>L : 타원 추가</li>' +
                 '<li>SHIFT + 선택 : 그룹</li>' +
+                '<li>DRAG & DROP : 이미지 추가</li>' +                
+                '<li>SPACE + DRAG : 마인드 시점 이동</li>' +
+                '<li>마우스 휠 : 마인드 확대/축소</li>' +
+                '<li>CTRL + Z : 실행 취소</li>' +
+                '<li>CTRL + Y : 다시 실행</li>' +
+                '<li>CTRL + X : 잘라내기</li>' +
+                '<li>CTRL + C : 복사</li>' +
+                '<li>CTRL + V : 붙여넣기</li>' +
+                '<li>DELETE : 삭제</li>' +
+                '<li>CTRL + S : 이미지로 저장</li>' +
                 '</div>',
             });
         });
