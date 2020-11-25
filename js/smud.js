@@ -221,6 +221,11 @@ fabric.Canvas.prototype.Paste = function() {
  */
 fabric.Canvas.prototype.Delete = function() {
   this.remove(this.getActiveObject());
+  var activeObject = this.getActiveObjects();
+  // if (confirm('Are you sure?')) {
+    this.discardActiveObject();
+    this.remove(...activeObject);
+  // }
 }
 
 /**

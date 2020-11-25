@@ -252,6 +252,7 @@
             } else if (e.which === 32) { // space bar
               canvas.SpaceBarKeyDn();
             } else if (e.which === 46) { // delete
+              e.preventDefault();
               canvas.Delete();              
             } else if ((e.ctrlKey || e.metaKey) && e.which === 83) { // ctrl + s
               e.preventDefault();
