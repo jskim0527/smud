@@ -172,11 +172,13 @@
 
   <script> 
     (function() {
-
-      fabric.Object.prototype.transparentCorners = false;
-      fabric.Object.prototype.cornerColor = 'blue';
-      fabric.Object.prototype.cornerStyle = 'circle';
-      
+      // control 모양 정의
+      fabric.Object.prototype.set({
+        transparentCorners: true,
+        //cornerStyle: 'circle',
+        cornerColor: '#D3D7DA',
+      });
+     
       var $wrapper = $('#content'),
         canvas = new fabric.Canvas('c', {
           selection: false,
@@ -234,6 +236,9 @@
             } else if ((e.ctrlKey || e.metaKey) && e.which === 90) { // ctrl + z
               e.preventDefault();
               canvas.undo();
+            } else if ((e.ctrlKey || e.metaKey) && e.which === 68) { // ctrl + d
+              e.preventDefault();
+              canvas.New();              
             } else if ((e.ctrlKey || e.metaKey) && e.which === 88) { // ctrl + x
               e.preventDefault();
               canvas.Cut();              
@@ -291,14 +296,14 @@
             $('.panel .color').css('background-color', color.rgbString);
             if (canvas.getActiveObject()) {
               canvas.getActiveObject().set("fill", color.rgbString);
-              canvas.requestRenderAll(); // 다시 그리기
+              canvas.renderAll(); // 다시 그리기
             }
           },
           onDone: function(color) {
             $('.panel .color').css('background-color', color.rgbString);
             if (canvas.getActiveObject()) {
               canvas.getActiveObject().set("fill", color.rgbString);
-              canvas.requestRenderAll(); // 다시 그리기
+              canvas.renderAll(); // 다시 그리기
             }
           },
         });

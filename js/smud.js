@@ -110,7 +110,7 @@ fabric.Canvas.prototype.initCanvas = function() {
         var vpt = this.viewportTransform;
         vpt[4] += e.clientX - this.lastPosX;
         vpt[5] += e.clientY - this.lastPosY;
-        this.requestRenderAll();
+        this.renderAll();
         this.lastPosX = e.clientX;
         this.lastPosY = e.clientY;
       }
@@ -174,6 +174,13 @@ fabric.Canvas.prototype.PasteImage = function(e) {
       //console.log("이미지 붙여넣기");
     });
   }
+}
+
+/**
+ * 전체 지우기
+ */
+fabric.Canvas.prototype.New = function() {
+  this.clear();
 }
 
 /**
@@ -249,7 +256,7 @@ fabric.Canvas.prototype.Paste = function() {
       _clipboard.top += 10;
       _clipboard.left += 10;
       o.setActiveObject(clonedObj);
-      o.requestRenderAll();
+      o.renderAll();
     });
   //   _clipboard = null;
   // }
@@ -280,7 +287,6 @@ fabric.Canvas.prototype.AddTextBox = function(e) {
     height: 100,
     fontSize: 20,
     objectCaching: false,
-    cornerColor: '#D3D7DA',
     fontFamily: 'Noto Sans KR'
     //hasControls: false,
   });
@@ -302,7 +308,6 @@ fabric.Canvas.prototype.AddRect = function(e) {
     width: 200,
     height: 100,
     objectCaching: false,
-    cornerColor: '#D3D7DA',
     //stroke: 'lightgreen',
     //strokeWidth: 4,
   });
@@ -324,8 +329,7 @@ fabric.Canvas.prototype.AddCircle = function(e) {
     fill: $('.panel .color').css('background-color'),
     width: 100,
     height: 100,
-    objectCaching: false,
-    cornerColor: '#D3D7DA',
+    objectCaching: false,  
     //stroke: 'lightgreen',
     //strokeWidth: 4,
   });
