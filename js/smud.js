@@ -59,7 +59,7 @@ fabric.Canvas.prototype._smudDispose = function() {
  * It pushes the state of the canvas into history stack
  */
 fabric.Canvas.prototype._smudMonitoring = function() {
-  //console.log("monitoring");
+  // console.log("monitoring");
 }
 
 fabric.Canvas.prototype.initCanvas = function() {
@@ -68,6 +68,9 @@ fabric.Canvas.prototype.initCanvas = function() {
    this.setBackgroundColor(
      'rgba(255, 255, 255, 0.6)'
    , this.renderAll.bind(this));
+
+   var json = '{"version":"4.1.0","objects":[{"type":"circle","version":"4.1.0","originX":"left","originY":"top","left":348,"top":173,"width":100,"height":100,"fill":"rgb(48,41,73)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"radius":50,"startAngle":0,"endAngle":6.283185307179586},{"type":"rect","version":"4.1.0","originX":"left","originY":"top","left":401,"top":226,"width":200,"height":100,"fill":"rgb(11,19,43)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"rx":0,"ry":0},{"type":"textbox","version":"4.1.0","originX":"left","originY":"top","left":420,"top":271,"width":200,"height":48.82,"fill":"rgb(91, 192, 190)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":2.96,"scaleY":2.96,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"text":"SMUD.는 MOODBOARD입니다.","fontSize":20,"fontWeight":"normal","fontFamily":"Noto Sans KR","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"minWidth":20,"splitByGrapheme":false,"styles":{}},{"type":"rect","version":"4.1.0","originX":"left","originY":"top","left":424,"top":409,"width":200,"height":100,"fill":"rgb(233,255,46)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1.82,"scaleY":0.02,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"rx":0,"ry":0}],"background":"rgba(255, 255, 255, 0.6)"}';
+   this.loadFromJSON(json, this.renderAll.bind(this));
 
   this.on({
     'selection:created': function() {
@@ -90,6 +93,9 @@ fabric.Canvas.prototype.initCanvas = function() {
     },
     'mouse:down': function(opt) {
       var evt = opt.e;
+       
+      //console.log(JSON.stringify(this.toJSON()));
+
       if (this.isSpaceBarKeyDn) {
         //if (evt.which === 32) { // 스페이스바
         this.isDragging = true;
@@ -134,7 +140,8 @@ fabric.Canvas.prototype.initCanvas = function() {
 
 fabric.Canvas.prototype.SpaceBarKeyDn = function(e) {
   this.isSpaceBarKeyDn = true;
-  this.setCursor('pointer');
+  // this.setCursor('url(https://img.icons8.com/fluent-systems-filled/24/000000/hand.png)');
+  this.setCursor('all-scroll');
 }
 
 fabric.Canvas.prototype.SpaceBarKeyUp = function(e) {
@@ -188,32 +195,64 @@ fabric.Canvas.prototype.Copy = function() {
 
 /**
  * 붙여넣기
+ * TODO 이미지 클립보드
  */
 fabric.Canvas.prototype.Paste = function() {
   var o = this;
-	_clipboard.clone(function(clonedObj) {
-		o.discardActiveObject();
-		clonedObj.set({
-			left: clonedObj.left + 10,
-			top: clonedObj.top + 10,
-			evented: true,
-		});
-		if (clonedObj.type === 'activeSelection') {
-			// active selection needs a reference to the canvas.
-			clonedObj.canvas = o;
-			clonedObj.forEachObject(function(obj) {
-				o.add(obj);
-			});
-			// this should solve the unselectability
-			clonedObj.setCoords();
-		} else {
-			o.add(clonedObj);
-		}
-		_clipboard.top += 10;
-		_clipboard.left += 10;
-		o.setActiveObject(clonedObj);
-		o.requestRenderAll();
-	});
+  // var e = window;
+  // var items = e.originalEvent.clipboardData.items;
+
+  // console.log("_clipboard=>" + typeof _clipboard);
+  // console.log("items=>" + typeof items);
+  // console.log(items.length);
+
+  // if (items.length > 0) { // 이미지
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  
+  //   //Loop through files
+  //   for (var i = 0; i < items.length; i++) {
+  //     if (items[i].type.indexOf('image') == -1) continue;
+  //     var file = items[i],
+  //       type = items[i].type;
+  //     var imageData = file.getAsFile();
+  //     var URLobj = window.URL || window.webkitURL;
+  //     var img = new Image();
+  //     img.src = URLobj.createObjectURL(imageData);
+  //     fabric.Image.fromURL(img.src, function(img) {
+  //       // this === window
+  //       o.add(img);
+  //       //console.log("이미지 붙여넣기");
+  //     });
+  //   }
+  //   e.originalEvent.clipboardData.clearData();
+   
+  // } else { // 오브젝트
+    _clipboard.clone(function(clonedObj) {
+      o.discardActiveObject();
+      clonedObj.set({
+        left: clonedObj.left + 10,
+        top: clonedObj.top + 10,
+        evented: true,
+      });
+      if (clonedObj.type === 'activeSelection') {
+        // active selection needs a reference to the canvas.
+        clonedObj.canvas = o;
+        clonedObj.forEachObject(function(obj) {
+          o.add(obj);
+        });
+        // this should solve the unselectability
+        clonedObj.setCoords();
+      } else {
+        o.add(clonedObj);
+      }
+      _clipboard.top += 10;
+      _clipboard.left += 10;
+      o.setActiveObject(clonedObj);
+      o.requestRenderAll();
+    });
+  //   _clipboard = null;
+  // }
 }
 
 /**
