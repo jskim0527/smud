@@ -113,19 +113,50 @@
         margin-right: 10px;
     }
 
-    #color {
+    .color {
       position: fixed;
       top: 12px;
       right : 45px;
       width: 18px;
-      height: 18px;      
+      height: 18px;
+      z-index: 990;
       cursor: pointer;      
       /* float: left;      
       margin: 3px; */
       border-radius: 12px;
       border: #0b132b 1px solid;
       background-color: #5bc0be;
-      z-index: 999;
+
+    }
+
+    .colorPicker {
+      position: fixed;
+      top: 40px;
+      right : 45px;
+      z-index: 998;
+      /* display: table;
+      padding: 1em;
+      border: 1px solid silver */
+
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s ease;
+      transform-origin: 85% top;
+    }
+
+    /* .panel:hover .colorPicker, .colorPicker:hover {
+      opacity: 1;
+      transform: scale(1);
+    }     */
+
+    .colorPickerHide {
+      opacity: 0;
+      transform: scale(0);      
+    }
+
+    .colorPickerShow {
+      opacity: 1;
+      transform: scale(1);
     }
 
     /* 정보 */
@@ -139,7 +170,10 @@
       height: calc(100% - 52px);
     }
 
-</style>
+
+
+
+  </style>
 </head>
 
 <body>
@@ -150,25 +184,24 @@
         <img src="https://img.icons8.com/fluent-systems-filled/24/000000/settings.png"/>
       </div>
       <ul class="fab-options">
-        <!-- <li>
-          <span class="fab-label">색채우기</span>
-          <div class="fab-icon-holder">
-            <img id="menu fillcolor" src="https://img.icons8.com/fluent-systems-filled/24/000000/fill-color.png" alt="색채우기"/>
-          </div>
-        </li>         -->
-        <li>
+        <li id="menu_help">
           <span class="fab-label">도움말</span>
           <div class="fab-icon-holder">
-            <img id="menu_help" src="https://img.icons8.com/fluent-systems-filled/48/000000/help.png" alt="도움말"/>
+            <img src="https://img.icons8.com/fluent-systems-filled/48/000000/help.png" alt="도움말"/>
           </div>
         </li>
       </ul>
     </div>    
-    <div class="panel"><div id="color" class="color"></div></div>
+    <div class="panel">
+      <div class="color"></div>
+      <div class="colorPicker"></div>      
+    </div>
   </div>  
   <div id="content">
     <canvas id="c"></canvas>
   </div>
+
+  
 
   <script> 
     (function() {
@@ -190,19 +223,17 @@
         });
        
         // 배경 그리드
-        canvas.initCanvas();       
+        canvas.initCanvas();
 
         /*-----------------------------------------------------------*/
         // 이벤트 처리
         /*-----------------------------------------------------------*/  
         $(window).resize(function () {
           if (canvas.width != $("#content").width()) {
-              canvas.setWidth($("#content").width());
-              canvas.setHeight($("#content").height());
-              canvas.renderAll();
-              canvas.calcOffset();
-
-              // console.log($("#content").width());
+            canvas.setWidth($("#content").width());
+            canvas.setHeight($("#content").height());
+            canvas.renderAll();
+            canvas.calcOffset();
           }
         });
 
@@ -285,12 +316,22 @@
           }
         });
 
+        $('.colorPicker').addClass('colorPickerHide');
+        //$('.colorPicker').removeClass('colorPickerHide');
+
+        $('.panel .color').hover(function(){
+          $('.colorPicker').addClass('colorPickerShow');
+          $('.colorPicker').removeClass('colorPickerHide');
+          console.log('hover');
+        });
+
         // 색 선택
-        var pickerFixed = new Picker({
-          parent: document.querySelector('.panel .color'),
-          popup: 'left',
+        const parentFixed = document.querySelector('.colorPicker'),
+        pickerFixed = new Picker({
+          parent: parentFixed,
+          popup: false,
           alpha: false,
-          //editor: true,
+          editor: false,
           color: $('.panel .color').css('background-color'), //target.fill,
           onChange: function(color) {
             $('.panel .color').css('background-color', color.rgbString);
@@ -305,8 +346,11 @@
               canvas.getActiveObject().set("fill", color.rgbString);
               canvas.renderAll(); // 다시 그리기
             }
+
+            $('.colorPicker').addClass('colorPickerHide');
+            $('.colorPicker').removeClass('colorPickerShow');            
           },
-        });
+        });                  
 
         // 도움말
         $("#menu_help").click(function(){
